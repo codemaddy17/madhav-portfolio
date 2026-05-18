@@ -311,26 +311,13 @@ function App() {
         </div>
       </section>
 
-      <section id="photography" style={{background:'var(--g900)', padding: 0, margin: 0, height: '100vh', width: '100%', position: 'relative', overflow: 'hidden'}}>
-        {/* Floating Minimalist HUD Overlay */}
-        <div style={{
-          position: 'absolute',
-          top: '3rem',
-          left: '3rem',
-          zIndex: 10,
-          pointerEvents: 'none',
-          maxWidth: '450px'
-        }}>
-          <div className="section-tag" style={{color:'var(--g400)', marginBottom: '0.5rem'}}>&#128247; Photography</div>
-          <h2 className="section-title" style={{color:'var(--off)', fontSize: '2.5rem', lineHeight: 1.2, margin: 0}}>
-            Visual <em>Storytelling</em>
-          </h2>
-          <p style={{color:'rgba(238,238,238,0.5)', margin:'1rem 0 0', lineHeight: 1.6, fontSize:'.9rem'}}>
-            Drag and spin the interactive WebGL globe to explore my visual journeys across concerts, cultural festivals, literary events, comedy shows, and street photography.
-          </p>
+      <section id="photography" style={{background:'var(--g900)',paddingTop:'4rem',paddingBottom:'4rem'}}>
+        <div className="reveal" style={{textAlign:'center',marginBottom:'2rem'}}>
+          <div className="section-tag" style={{color:'var(--g400)'}}>&#128247; Photography</div>
+          <h2 className="section-title" style={{color:'var(--off)'}}>Visual Storytelling<br/><em>Through the Lens</em></h2>
+          <p style={{color:'rgba(238,238,238,0.6)',maxWidth:600,margin:'1rem auto 0',lineHeight:1.8,fontSize:'.95rem'}}>Drag and spin the interactive WebGL globe to explore my visual journeys across concerts, cultural festivals, literary events, comedy shows, and street photography.</p>
         </div>
-
-        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <div style={{ height: '600px', position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
           <InfiniteMenu items={[
             { image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', link: '#', title: 'Concert Photography', description: 'Raw energy captured in low light' },
             { image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600', link: '#', title: 'Cultural Festivals', description: 'Heritage meets modern celebration' },
