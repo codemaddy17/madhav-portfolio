@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rozha+One&family=Gotu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rozha+One&family=Gotu&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --g50:#F4FAF7;--g100:#E3F5EB;--g200:#C2EADB;--g300:#96DEC1;
@@ -802,3 +802,34 @@ footer a{color:var(--g400);text-decoration:none}
 .dark .glass-blob {
   opacity: 0.35;
 }
+
+/* ── GIANT BG TEXT ── */
+.giant-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20vw;
+  font-weight: 800;
+  color: var(--text);
+  opacity: 0.04;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: -0.05em;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  user-select: none;
+}
+.dark .giant-bg-text {
+  opacity: 0.05;
+}
+@media (max-width: 768px) {
+  .giant-bg-text {
+    font-size: 28vw;
+  }
+}
+
+
+
+
+

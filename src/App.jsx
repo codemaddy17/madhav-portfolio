@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import InfiniteMenu from './InfiniteMenu'
 
 function App() {
   const [dark, setDark] = useState(false)
@@ -164,7 +165,6 @@ function App() {
 
       <section id="about">
         <div className="reveal">
-          <div className="section-tag">About Me</div>
           <h2 className="section-title">Who I <em>Am</em></h2>
         </div>
         <div className="about-grid">
@@ -210,8 +210,8 @@ function App() {
         </div>
       </section>
 
-      <section id="skills">
-
+      <section id="skills" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div className="giant-bg-text">INNOVATE</div>
         <div className="toolkit-orbit-wrap reveal">
           <img src="/images/toolkit-base.png" alt="Madhav Base" className="toolkit-base-img" />
           <div className="toolkit-orbit">
@@ -245,7 +245,7 @@ function App() {
       <section id="projects" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="glass-blob blob-1"></div>
         <div className="glass-blob blob-2"></div>
-        <div className="reveal" style={{ position: 'relative', zIndex: 2 }}><div className="section-tag">Projects</div><h2 className="section-title">Things I've <em>Built</em></h2></div>
+        <div className="reveal" style={{ position: 'relative', zIndex: 2 }}><h2 className="section-title">Things I've <em>Built</em></h2></div>
         <div className="projects-grid" style={{ position: 'relative', zIndex: 2 }}>
           <div className="proj-card reveal">
             <div className="project-thumb pt2" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'3rem'}}>&#127758;</div>
@@ -311,127 +311,20 @@ function App() {
         </div>
       </section>
 
-      <div style={{background:'linear-gradient(180deg,var(--white),var(--g900))',height:80}}></div>
-
-      <section id="photography" style={{background:'var(--off)',paddingTop:'4rem'}}>
-        <div className="photo-hero-band reveal">
-          <div className="photo-hero-inner">
-            <div className="photo-hero-tag">&#128247; Photography</div>
-            <div className="photo-hero-title">Visual Storytelling<br/><em>Through the Lens</em></div>
-            <p className="photo-hero-body">My photography is shaped by the energy of the artists I've covered. From the raw, moody light of <strong>Papon's concert</strong> to the cultural grandeur of <strong>Virasat</strong> and the spoken-word electricity of <strong>UKTI Lit Fest</strong> — every frame is a search for the decisive moment. I shoot <strong>cinematic, emotional, and raw</strong>. No posed perfection — only honest light.</p>
-          </div>
+      <section id="photography" style={{background:'var(--g900)',paddingTop:'4rem',paddingBottom:'4rem'}}>
+        <div className="reveal" style={{textAlign:'center',marginBottom:'2rem'}}>
+          <div className="section-tag" style={{color:'var(--g400)'}}>&#128247; Photography</div>
+          <h2 className="section-title" style={{color:'var(--off)'}}>Visual Storytelling<br/><em>Through the Lens</em></h2>
+          <p style={{color:'rgba(238,238,238,0.6)',maxWidth:600,margin:'1rem auto 0',lineHeight:1.8,fontSize:'.95rem'}}>Drag and spin the globe to explore my photography work across concerts, cultural festivals, literary events, comedy shows, and street photography.</p>
         </div>
-        <div style={{color:'var(--text)'}}>
-          <div className="section-tag" style={{color:'var(--g400)',marginBottom:'.8rem'}}>Artist-Inspired Work</div>
-          <h2 className="section-title" style={{color:'var(--text)',marginBottom:'2.5rem'}}>Events <em>Covered</em></h2>
-        </div>
-
-        {/* Artist 1 */}
-        <div className="artist-section reveal">
-          <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
-            <div className="artist-num">01</div>
-            <div className="artist-info">
-              <h3 style={{color:'var(--text)'}}>Javed Ali — Concert 2025</h3>
-              <span className="artist-style-tag">Concert · Emotional · Low-Light Mastery</span>
-              <p style={{color:'rgba(255,255,255,.55)'}}>Javed Ali's performances are cinematic — long, moody exposures, stage fog, and raw emotional connection between artist and audience. Capturing his concerts demands patience for the perfect light burst and anticipation of musical peaks.</p>
-            </div>
-          </div>
-          <div className="masonry">
-            {[['Stage Fog','🎤','Concert · Javed Ali 2025',200,'var(--g900)','var(--surface)'],['Crowd Surge','🎵','Concert · Javed Ali 2025',150,'var(--g800)','var(--g900)'],['Spotlight Moment','🌟','Concert · Javed Ali 2025',180,'var(--surface)','var(--g700) 200%'],['Hands Up','🙌','Concert · Javed Ali 2025',170,'var(--g900)','var(--g600) 200%'],['Silhouette','🎶','Concert · Javed Ali 2025',140,'var(--off)','var(--g800)'],['Green Haze','🎸','Concert · Javed Ali 2025',190,'var(--g900)','var(--g400) 250%']].map(([label,emoji,sub,h,c1,c2])=>(
-              <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
-                <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
-                <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Artist 2 */}
-        <div className="artist-section reveal">
-          <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
-            <div className="artist-num">02</div>
-            <div className="artist-info">
-              <h3 style={{color:'var(--text)'}}>Virasat — Cultural Fest 2024</h3>
-              <span className="artist-style-tag">Cultural · Heritage · Vibrant Portraits</span>
-              <p style={{color:'rgba(255,255,255,.55)'}}>Virasat is a celebration of Indian heritage — folk art, classical performances, and vibrant colour. My approach here shifts to wider compositions, cultural portraiture, and the rich textures of tradition meeting modernity on a Dehradun campus.</p>
-            </div>
-          </div>
-          <div className="masonry">
-            {[['Folk Dance','💃','Cultural · Virasat 2024',165,'var(--surface)','var(--g500) 200%'],['Heritage Portrait','🪔','Cultural · Virasat 2024',210,'var(--g900)','var(--g800)'],['Crowd Energy','🏮','Cultural · Virasat 2024',155,'var(--off)','var(--g600)']].map(([label,emoji,sub,h,c1,c2])=>(
-              <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
-                <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
-                <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Artist 3 */}
-        <div className="artist-section reveal">
-          <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
-            <div className="artist-num">03</div>
-            <div className="artist-info">
-              <h3 style={{color:'var(--text)'}}>UKTI Literature Fest 2025</h3>
-              <span className="artist-style-tag">Literary · Intimate · Street-Style Candids</span>
-              <p style={{color:'rgba(255,255,255,.55)'}}>Literature festivals demand a different eye — quiet concentration, gestural body language, the micro-expressions of thinkers mid-thought. Shooting UKTI Lit Fest meant hunting for candid intimacy, panel depth, and the electric charge of a poem landing right.</p>
-            </div>
-          </div>
-          <div className="masonry">
-            {[['Speaker Intensity','📖','Literary · UKTI 2025',185,'var(--g900)','var(--g700) 180%'],['Panel Discussion','🎙️','Literary · UKTI 2025',145,'var(--surface)','var(--g400) 250%'],['Audience Candid','✍️','Literary · UKTI 2025',170,'var(--g800)','var(--g900)']].map(([label,emoji,sub,h,c1,c2])=>(
-              <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
-                <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
-                <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Artist 4 */}
-        <div className="artist-section reveal">
-          <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
-            <div className="artist-num">04</div>
-            <div className="artist-info">
-              <h3 style={{color:'var(--text)'}}>Doon Comedy Festival 2025</h3>
-              <span className="artist-style-tag">Stand-Up · Dynamic · Expressive Portraits</span>
-              <p style={{color:'rgba(255,255,255,.55)'}}>Comedy photography is all about timing — that fraction of a second when the punchline lands and the performer's face is pure electricity. Fast shutter speeds, single-light drama, and chasing the authentic laugh.</p>
-            </div>
-          </div>
-          <div className="masonry">
-            {[['The Punchline','😂','Comedy · Doon 2025',175,'var(--g900)','var(--g300) 250%'],['Mic Drop','🎤','Comedy · Doon 2025',200,'var(--off)','var(--g500) 200%'],['Laughter Row','🤣','Comedy · Doon 2025',155,'var(--g800)','var(--surface)']].map(([label,emoji,sub,h,c1,c2])=>(
-              <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
-                <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
-                <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Carousel */}
-        <div className="carousel-wrap reveal">
-          <div className="section-tag" style={{color:'var(--g400)',marginBottom:'.8rem'}}>Featured Work</div>
-          <h2 className="section-title" style={{color:'var(--text)',marginBottom:'1.5rem'}}>Best <em>Frames</em></h2>
-          <div className="photo-cats">
-            {['all','concert','portrait','street'].map(c=>(
-              <button key={c} className={`pcat${activeCat===c?' on':''}`} onClick={()=>filterCat(c)}>{c==='all'?'All':c==='concert'?'Concerts':c==='portrait'?'Portraits':'Street & Events'}</button>
-            ))}
-          </div>
-          <div className="carousel-track-wrap" style={{position:'relative'}}>
-            <div className="c-track" ref={cTrackRef}>
-              <div className="c-slide cs1" data-cap="Papon Concert 2025 — Stage Fog & Green Light">🎤</div>
-              <div className="c-slide cs2" data-cap="Virasat 2024 — Folk Heritage Portrait">💃</div>
-              <div className="c-slide cs3" data-cap="UKTI Literature Fest 2025 — Speaker Intensity">📖</div>
-              <div className="c-slide cs4" data-cap="Doon Comedy Festival 2025 — The Punchline">😂</div>
-            </div>
-            <div className="c-controls">
-              <button className="c-btn" onClick={()=>cMove(-1)}>&#8249;</button>
-              <button className="c-btn" onClick={()=>cMove(1)}>&#8250;</button>
-            </div>
-          </div>
-          <div className="c-dots">
-            {[0,1,2,3].map(i=>(
-              <div key={i} className={`cdot${cIdx===i?' on':''}`} onClick={()=>goSlide(i)}></div>
-            ))}
-          </div>
+        <div style={{ height: '600px', position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+          <InfiniteMenu items={[
+            { image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', link: '#', title: 'Concert Photography', description: 'Raw energy captured in low light' },
+            { image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600', link: '#', title: 'Cultural Festivals', description: 'Heritage meets modern celebration' },
+            { image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600', link: '#', title: 'Literary Events', description: 'Capturing the power of words' },
+            { image: 'https://images.unsplash.com/photo-1585699324551-f6c309eedeca?w=600', link: '#', title: 'Comedy Shows', description: 'The art of the punchline' },
+            { image: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=600', link: '#', title: 'Street & Portraits', description: 'Candid moments, real stories' }
+          ]} />
         </div>
       </section>
 
