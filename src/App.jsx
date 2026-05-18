@@ -29,7 +29,7 @@ function App() {
   const handleSend = (e) => {
     const btn = e.currentTarget
     btn.textContent = 'Sending...'
-    setTimeout(() => { btn.innerHTML = 'Message Sent ✓'; btn.style.background = 'linear-gradient(135deg,#059669,#047857)' }, 1400)
+    setTimeout(() => { btn.innerHTML = 'Message Sent ✓'; btn.style.background = 'linear-gradient(135deg,var(--g600),var(--g800))' }, 1400)
     setTimeout(() => { btn.innerHTML = 'Send Message →'; btn.style.background = '' }, 5000)
   }
 
@@ -62,12 +62,7 @@ function App() {
     const onScroll = () => {
       const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100
       if (scrollBarRef.current) scrollBarRef.current.style.width = pct + '%'
-      document.querySelectorAll('.skill-fill').forEach(el => {
-        if (!el.style.width || el.style.width === '0%') {
-          const rect = el.closest('.skill-panel')?.getBoundingClientRect()
-          if (rect && rect.top < window.innerHeight * 0.88) el.style.width = el.dataset.w + '%'
-        }
-      })
+
       document.querySelectorAll('.reveal,.tl-item').forEach(el => {
         if (el.getBoundingClientRect().top < window.innerHeight * 0.9) el.classList.add('vis')
       })
@@ -123,7 +118,7 @@ function App() {
         <div className="hero-photo-fade"></div>
         <div className="hero-content">
           <div className="hero-eyebrow"><span className="eyebrow-dot"></span> Open to Internships &amp; Opportunities</div>
-          <h1 className="hero-name">Madhav <em className="accent">Tiwari</em></h1>
+          <h1 className="hero-name">Madhav <em className="accent hindi-name">तिवारी</em></h1>
           <div className="hero-typed-wrap">
             <span className="typed-prefix">I'm a</span>
             <span className="hero-typed" ref={typedRef}></span><span className="cursor-blink">|</span>
@@ -167,8 +162,6 @@ function App() {
         </a>
       </div>
 
-      <div className="section-divider"></div>
-
       <section id="about">
         <div className="reveal">
           <div className="section-tag">About Me</div>
@@ -176,7 +169,7 @@ function App() {
         </div>
         <div className="about-grid">
           <div className="reveal">
-            <p className="about-lead">Hey! I'm <strong>Madhav Tiwari</strong>, a 2nd-year B.Tech CSE student from Pune, currently studying at <strong>UPES, Dehradun</strong>. I sit at the intersection of <strong>Full Stack</strong> development, and creative <strong>Photography</strong>.</p>
+            <p className="about-lead">I'm <strong>Madhav Tiwari</strong>, a 2nd-year B.Tech CSE student from Delhi, currently studying at <strong>UPES, Dehradun</strong>. I sit at the intersection of <strong>Full Stack</strong> development, and creative <strong>Photography</strong>.</p>
             <p className="about-lead" style={{marginBottom:'1.8rem'}}>I love breaking problems down — whether it's algorithmic challenges in <strong>Java</strong>, building scalable web apps with <strong>React &amp; Node.js</strong>, or understanding how systems can be secured from the ground up.</p>
             <div className="about-chips">
               <span className="chip">&#128187; Full Stack Dev</span>
@@ -201,7 +194,7 @@ function App() {
             <div className="about-card">
               <div className="ac-header"><div className="ac-icon">&#127891;</div><div className="ac-title">Academic Background</div></div>
               <div className="ac-sub">CBSE · Pune</div>
-              <div className="ac-body">Class 12th: 75% &nbsp;|&nbsp; Class 10th: 88%</div>
+              <div className="ac-body">Class 12th: 75% &nbsp;|&nbsp; Class 10th: 89%</div>
             </div>
             <div className="about-card">
               <div className="ac-header"><div className="ac-icon">&#128251;</div><div className="ac-title">Career Goal</div></div>
@@ -217,71 +210,72 @@ function App() {
         </div>
       </section>
 
-      <div className="section-divider"></div>
-
       <section id="skills">
-        <div className="reveal">
-          <div className="section-tag">Technical Skills</div>
-          <h2 className="section-title">My <em>Toolkit</em></h2>
-        </div>
-        <div className="skills-outer">
-          <div className="skill-panel reveal">
-            <h3>&#9672; Web Development</h3>
-            {[['HTML & CSS',85],['JavaScript',75],['React.js',68],['Node.js',55]].map(([n,p])=>(
-              <div className="skill-row" key={n}><div className="skill-info"><span className="skill-name">{n}</span><span className="skill-pct">{p}%</span></div><div className="skill-track"><div className="skill-fill" data-w={p}></div></div></div>
-            ))}
-          </div>
-          <div className="skill-panel reveal">
-            <h3>&#9672; Programming Languages</h3>
-            {[['Java (DSA-focused)',80],['Python (basics)',65],['Swift',60],['SQL',65]].map(([n,p])=>(
-              <div className="skill-row" key={n}><div className="skill-info"><span className="skill-name">{n}</span><span className="skill-pct">{p}%</span></div><div className="skill-track"><div className="skill-fill" data-w={p}></div></div></div>
-            ))}
-          </div>
-          <div className="skill-panel reveal">
-            <h3>&#9672; Tools &amp; Databases</h3>
-            {[['Git & GitHub',78],['MySQL & MongoDB',65],['VS Code · IntelliJ · Postman',80],['Docker (basic)',40]].map(([n,p])=>(
-              <div className="skill-row" key={n}><div className="skill-info"><span className="skill-name">{n}</span><span className="skill-pct">{p}%</span></div><div className="skill-track"><div className="skill-fill" data-w={p}></div></div></div>
+
+        <div className="toolkit-orbit-wrap reveal">
+          <img src="/images/toolkit-base.png" alt="Madhav Base" className="toolkit-base-img" />
+          <div className="toolkit-orbit">
+            {[
+              'html5/html5-original.svg',
+              'css3/css3-original.svg',
+              'javascript/javascript-original.svg',
+              'react/react-original.svg',
+              'nodejs/nodejs-original.svg',
+              'java/java-original.svg',
+              'python/python-original.svg',
+              'swift/swift-original.svg',
+              'git/git-original.svg',
+              'github/github-original.svg',
+              'mysql/mysql-original.svg',
+              'mongodb/mongodb-original.svg',
+              'docker/docker-original.svg'
+            ].map((icon, i, arr) => (
+              <div 
+                className="orbit-item" 
+                key={i} 
+                style={{ transform: `rotate(${(360 / arr.length) * i}deg) translateY(var(--orbit-radius)) rotate(-${(360 / arr.length) * i}deg)` }}
+              >
+                <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${icon}`} alt="skill" />
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <div className="section-divider"></div>
-
-      <section id="projects">
-        <div className="reveal"><div className="section-tag">Projects</div><h2 className="section-title">Things I've <em>Built</em></h2></div>
-        <div className="projects-grid">
+      <section id="projects" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div className="glass-blob blob-1"></div>
+        <div className="glass-blob blob-2"></div>
+        <div className="reveal" style={{ position: 'relative', zIndex: 2 }}><div className="section-tag">Projects</div><h2 className="section-title">Things I've <em>Built</em></h2></div>
+        <div className="projects-grid" style={{ position: 'relative', zIndex: 2 }}>
           <div className="proj-card reveal">
             <div className="project-thumb pt2" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'3rem'}}>&#127758;</div>
             <div className="proj-body">
-              <div className="proj-title">DSA Visualizer</div>
+              <div className="proj-title">Inventory Management</div>
               <div className="proj-desc">Interactive data structures and algorithms visualizer — sorting, graph traversals, trees. Built to reinforce Java DSA concepts visually.</div>
-              <div className="proj-tags"><span className="proj-tag">HTML</span><span className="proj-tag">CSS</span><span className="proj-tag">JavaScript</span><span className="proj-tag">Java</span></div>
+              <div className="proj-tags"><span className="proj-tag">Swing</span><span className="proj-tag">Java</span></div>
               <div className="proj-links"><a href="#" className="plb plb-solid">&#9654; Live Demo</a><a href="#" className="plb plb-ghost">&#10140; GitHub</a></div>
             </div>
           </div>
           <div className="proj-card reveal">
             <div className="project-thumb pt3" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'3rem'}}>&#128197;</div>
             <div className="proj-body">
-              <div className="proj-title">Prayudh Media Portal</div>
+              <div className="proj-title">Finance Tracker</div>
               <div className="proj-desc">Internal web portal for UPES Debating Society — event documentation, media gallery, and announcement management system.</div>
-              <div className="proj-tags"><span className="proj-tag">React</span><span className="proj-tag">CSS</span><span className="proj-tag">Firebase</span></div>
+              <div className="proj-tags"><span className="proj-tag">React</span><span className="proj-tag">CSS</span><span className="proj-tag">Javascript</span></div>
               <div className="proj-links"><a href="#" className="plb plb-solid">&#9654; Live Demo</a><a href="#" className="plb plb-ghost">&#10140; GitHub</a></div>
             </div>
           </div>
           <div className="proj-card reveal">
             <div className="project-thumb pt4" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'3rem'}}>&#128247;</div>
             <div className="proj-body">
-              <div className="proj-title">ConcertLens — Photo Portfolio</div>
+              <div className="proj-title">E-Commerce Website</div>
               <div className="proj-desc">A responsive photography portfolio showcasing concert, street, and event photography. Masonry grid, lightbox, and category filtering.</div>
-              <div className="proj-tags"><span className="proj-tag">HTML</span><span className="proj-tag">CSS Grid</span><span className="proj-tag">JavaScript</span></div>
+              <div className="proj-tags"><span className="proj-tag">Swift</span><span className="proj-tag">Swift</span></div>
               <div className="proj-links"><a href="#" className="plb plb-solid">&#9654; Live Demo</a><a href="#" className="plb plb-ghost">&#10140; GitHub</a></div>
             </div>
           </div>
         </div>
       </section>
-
-      <div className="section-divider"></div>
 
       <section id="experience">
         <div className="reveal"><div className="section-tag">Experience &amp; Achievements</div><h2 className="section-title">The <em>Journey</em></h2></div>
@@ -293,8 +287,6 @@ function App() {
           <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Academic</div><div className="tl-date">2024 – Present</div><div className="tl-title">B.Tech CSE · UPES Dehradun</div><div className="tl-org">CGPA: 6.95 after 1st Year</div><div className="tl-desc">Strong foundation in programming, data structures, algorithms, and computer science fundamentals. Active in campus extracurriculars.</div></div>
         </div>
       </section>
-
-      <div className="section-divider"></div>
 
       <section id="contact">
         <div className="reveal"><div className="section-tag">Get In Touch</div><h2 className="section-title">Let's <em>Connect</em></h2></div>
@@ -321,7 +313,7 @@ function App() {
 
       <div style={{background:'linear-gradient(180deg,var(--white),var(--g900))',height:80}}></div>
 
-      <section id="photography" style={{background:'#0a1a10',paddingTop:'4rem'}}>
+      <section id="photography" style={{background:'var(--off)',paddingTop:'4rem'}}>
         <div className="photo-hero-band reveal">
           <div className="photo-hero-inner">
             <div className="photo-hero-tag">&#128247; Photography</div>
@@ -329,9 +321,9 @@ function App() {
             <p className="photo-hero-body">My photography is shaped by the energy of the artists I've covered. From the raw, moody light of <strong>Papon's concert</strong> to the cultural grandeur of <strong>Virasat</strong> and the spoken-word electricity of <strong>UKTI Lit Fest</strong> — every frame is a search for the decisive moment. I shoot <strong>cinematic, emotional, and raw</strong>. No posed perfection — only honest light.</p>
           </div>
         </div>
-        <div style={{color:'#ecfdf5'}}>
+        <div style={{color:'var(--text)'}}>
           <div className="section-tag" style={{color:'var(--g400)',marginBottom:'.8rem'}}>Artist-Inspired Work</div>
-          <h2 className="section-title" style={{color:'#ecfdf5',marginBottom:'2.5rem'}}>Events <em>Covered</em></h2>
+          <h2 className="section-title" style={{color:'var(--text)',marginBottom:'2.5rem'}}>Events <em>Covered</em></h2>
         </div>
 
         {/* Artist 1 */}
@@ -339,13 +331,13 @@ function App() {
           <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
             <div className="artist-num">01</div>
             <div className="artist-info">
-              <h3 style={{color:'#ecfdf5'}}>Javed Ali — Concert 2025</h3>
+              <h3 style={{color:'var(--text)'}}>Javed Ali — Concert 2025</h3>
               <span className="artist-style-tag">Concert · Emotional · Low-Light Mastery</span>
               <p style={{color:'rgba(255,255,255,.55)'}}>Javed Ali's performances are cinematic — long, moody exposures, stage fog, and raw emotional connection between artist and audience. Capturing his concerts demands patience for the perfect light burst and anticipation of musical peaks.</p>
             </div>
           </div>
           <div className="masonry">
-            {[['Stage Fog','🎤','Concert · Javed Ali 2025',200,'#022c22','#0f2419'],['Crowd Surge','🎵','Concert · Javed Ali 2025',150,'#065f46','#022c22'],['Spotlight Moment','🌟','Concert · Javed Ali 2025',180,'#0f2419','#059669 200%'],['Hands Up','🙌','Concert · Javed Ali 2025',170,'#022c22','#10b981 200%'],['Silhouette','🎶','Concert · Javed Ali 2025',140,'#0a1f13','#065f46'],['Green Haze','🎸','Concert · Javed Ali 2025',190,'#022c22','#4ade80 250%']].map(([label,emoji,sub,h,c1,c2])=>(
+            {[['Stage Fog','🎤','Concert · Javed Ali 2025',200,'var(--g900)','var(--surface)'],['Crowd Surge','🎵','Concert · Javed Ali 2025',150,'var(--g800)','var(--g900)'],['Spotlight Moment','🌟','Concert · Javed Ali 2025',180,'var(--surface)','var(--g700) 200%'],['Hands Up','🙌','Concert · Javed Ali 2025',170,'var(--g900)','var(--g600) 200%'],['Silhouette','🎶','Concert · Javed Ali 2025',140,'var(--off)','var(--g800)'],['Green Haze','🎸','Concert · Javed Ali 2025',190,'var(--g900)','var(--g400) 250%']].map(([label,emoji,sub,h,c1,c2])=>(
               <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
                 <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
                 <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
@@ -359,13 +351,13 @@ function App() {
           <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
             <div className="artist-num">02</div>
             <div className="artist-info">
-              <h3 style={{color:'#ecfdf5'}}>Virasat — Cultural Fest 2024</h3>
+              <h3 style={{color:'var(--text)'}}>Virasat — Cultural Fest 2024</h3>
               <span className="artist-style-tag">Cultural · Heritage · Vibrant Portraits</span>
               <p style={{color:'rgba(255,255,255,.55)'}}>Virasat is a celebration of Indian heritage — folk art, classical performances, and vibrant colour. My approach here shifts to wider compositions, cultural portraiture, and the rich textures of tradition meeting modernity on a Dehradun campus.</p>
             </div>
           </div>
           <div className="masonry">
-            {[['Folk Dance','💃','Cultural · Virasat 2024',165,'#0f2419','#22c55e 200%'],['Heritage Portrait','🪔','Cultural · Virasat 2024',210,'#022c22','#065f46'],['Crowd Energy','🏮','Cultural · Virasat 2024',155,'#0a1f13','#10b981']].map(([label,emoji,sub,h,c1,c2])=>(
+            {[['Folk Dance','💃','Cultural · Virasat 2024',165,'var(--surface)','var(--g500) 200%'],['Heritage Portrait','🪔','Cultural · Virasat 2024',210,'var(--g900)','var(--g800)'],['Crowd Energy','🏮','Cultural · Virasat 2024',155,'var(--off)','var(--g600)']].map(([label,emoji,sub,h,c1,c2])=>(
               <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
                 <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
                 <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
@@ -379,13 +371,13 @@ function App() {
           <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
             <div className="artist-num">03</div>
             <div className="artist-info">
-              <h3 style={{color:'#ecfdf5'}}>UKTI Literature Fest 2025</h3>
+              <h3 style={{color:'var(--text)'}}>UKTI Literature Fest 2025</h3>
               <span className="artist-style-tag">Literary · Intimate · Street-Style Candids</span>
               <p style={{color:'rgba(255,255,255,.55)'}}>Literature festivals demand a different eye — quiet concentration, gestural body language, the micro-expressions of thinkers mid-thought. Shooting UKTI Lit Fest meant hunting for candid intimacy, panel depth, and the electric charge of a poem landing right.</p>
             </div>
           </div>
           <div className="masonry">
-            {[['Speaker Intensity','📖','Literary · UKTI 2025',185,'#022c22','#059669 180%'],['Panel Discussion','🎙️','Literary · UKTI 2025',145,'#0f2419','#4ade80 250%'],['Audience Candid','✍️','Literary · UKTI 2025',170,'#065f46','#022c22']].map(([label,emoji,sub,h,c1,c2])=>(
+            {[['Speaker Intensity','📖','Literary · UKTI 2025',185,'var(--g900)','var(--g700) 180%'],['Panel Discussion','🎙️','Literary · UKTI 2025',145,'var(--surface)','var(--g400) 250%'],['Audience Candid','✍️','Literary · UKTI 2025',170,'var(--g800)','var(--g900)']].map(([label,emoji,sub,h,c1,c2])=>(
               <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
                 <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
                 <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
@@ -399,13 +391,13 @@ function App() {
           <div className="artist-header" style={{background:'rgba(255,255,255,0.04)',borderColor:'rgba(74,222,128,0.15)'}}>
             <div className="artist-num">04</div>
             <div className="artist-info">
-              <h3 style={{color:'#ecfdf5'}}>Doon Comedy Festival 2025</h3>
+              <h3 style={{color:'var(--text)'}}>Doon Comedy Festival 2025</h3>
               <span className="artist-style-tag">Stand-Up · Dynamic · Expressive Portraits</span>
               <p style={{color:'rgba(255,255,255,.55)'}}>Comedy photography is all about timing — that fraction of a second when the punchline lands and the performer's face is pure electricity. Fast shutter speeds, single-light drama, and chasing the authentic laugh.</p>
             </div>
           </div>
           <div className="masonry">
-            {[['The Punchline','😂','Comedy · Doon 2025',175,'#022c22','#86efac 250%'],['Mic Drop','🎤','Comedy · Doon 2025',200,'#0a1f13','#22c55e 200%'],['Laughter Row','🤣','Comedy · Doon 2025',155,'#065f46','#0f2419']].map(([label,emoji,sub,h,c1,c2])=>(
+            {[['The Punchline','😂','Comedy · Doon 2025',175,'var(--g900)','var(--g300) 250%'],['Mic Drop','🎤','Comedy · Doon 2025',200,'var(--off)','var(--g500) 200%'],['Laughter Row','🤣','Comedy · Doon 2025',155,'var(--g800)','var(--surface)']].map(([label,emoji,sub,h,c1,c2])=>(
               <div className="m-item" key={label} onClick={()=>openLB(label,emoji,sub)}>
                 <div className="m-placeholder" style={{height:h,background:`linear-gradient(135deg,${c1},${c2})`}}>{emoji}</div>
                 <div className="m-green-tint"></div><div className="m-overlay"><div className="m-label">{label}</div></div>
@@ -417,7 +409,7 @@ function App() {
         {/* Carousel */}
         <div className="carousel-wrap reveal">
           <div className="section-tag" style={{color:'var(--g400)',marginBottom:'.8rem'}}>Featured Work</div>
-          <h2 className="section-title" style={{color:'#ecfdf5',marginBottom:'1.5rem'}}>Best <em>Frames</em></h2>
+          <h2 className="section-title" style={{color:'var(--text)',marginBottom:'1.5rem'}}>Best <em>Frames</em></h2>
           <div className="photo-cats">
             {['all','concert','portrait','street'].map(c=>(
               <button key={c} className={`pcat${activeCat===c?' on':''}`} onClick={()=>filterCat(c)}>{c==='all'?'All':c==='concert'?'Concerts':c==='portrait'?'Portraits':'Street & Events'}</button>
@@ -447,7 +439,7 @@ function App() {
       <div id="lb" className={lbOpen?'open':''} onClick={closeLB}>
         <button className="lb-close" onClick={closeLB}>&#10005;</button>
         <div className="lb-inner" onClick={e=>e.stopPropagation()}>
-          <div className="lb-box" style={{background:'linear-gradient(135deg,#022c22,#10b981 200%)'}}>{lbData.emoji}</div>
+          <div className="lb-box" style={{background:'linear-gradient(135deg,var(--g900),var(--g600) 200%)'}}>{lbData.emoji}</div>
           <div className="lb-cap">{lbData.cap}</div>
           <div className="lb-sub">{lbData.sub}</div>
         </div>
