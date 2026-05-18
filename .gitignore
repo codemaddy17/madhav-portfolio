@@ -7,3 +7,6 @@ dist-ssr
 .env.*
 temp_scripts/
 backups/
+
+# Local Netlify folder
+.netlify

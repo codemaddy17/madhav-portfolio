@@ -119,11 +119,15 @@ class InfiniteGridMenu {
   camera={matrix:mat4.create(),near:0.1,far:40,fov:Math.PI/4,aspect:1,position:vec3.fromValues(0,0,3),up:vec3.fromValues(0,1,0),matrices:{view:mat4.create(),projection:mat4.create(),inversProjection:mat4.create()}};
   nearestVertexIndex=null;smoothRotationVelocity=0;scaleFactor=1.0;movementActive=false;
 
-  constructor(canvas,items,onActiveItemChange,onMovementChange,onInit=null,scale=1.0){this.canvas=canvas;this.items=items||[];this.onActiveItemChange=onActiveItemChange||(()=>{});this.onMovementChange=onMovementChange||(()=>{});this.scaleFactor=scale;this.camera.position[2]=3*scale;this.#init(onInit);}
+  constructor(canvas,items,onActiveItemChange,onMovementChange,onInit=null,scale=1.0){this.canvas=canvas;this.items=items||[];this.onActiveItemChange=onActiveItemChange||(()=>{});this.onMovementChange=onMovementChange||(()=>{});this.scaleFactor=scale;this.camera.position[2]=3*scale;this.isPlaying=false;this.animationId=null;this.#init(onInit);}
 
   resize(){this.viewportSize=vec2.set(this.viewportSize||vec2.create(),this.canvas.clientWidth,this.canvas.clientHeight);const gl=this.gl;const needsResize=resizeCanvasToDisplaySize(gl.canvas);if(needsResize){gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);}this.#updateProjectionMatrix(gl);}
 
-  run(time=0){this.#deltaTime=Math.min(32,time-this.#time);this.#time=time;this.#deltaFrames=this.#deltaTime/this.TARGET_FRAME_DURATION;this.#frames+=this.#deltaFrames;this.#animate(this.#deltaTime);this.#render();requestAnimationFrame(t=>this.run(t));}
+  start(){if(this.isPlaying)return;this.isPlaying=true;this.#time=performance.now();this.run(this.#time);}
+
+  stop(){this.isPlaying=false;if(this.animationId){cancelAnimationFrame(this.animationId);this.animationId=null;}}
+
+  run(time=0){if(!this.isPlaying)return;this.#deltaTime=Math.min(32,time-this.#time);this.#time=time;this.#deltaFrames=this.#deltaTime/this.TARGET_FRAME_DURATION;this.#frames+=this.#deltaFrames;this.#animate(this.#deltaTime);this.#render();this.animationId=requestAnimationFrame(t=>this.run(t));}
 
   #init(onInit){this.gl=this.canvas.getContext("webgl2",{antialias:true,alpha:false});const gl=this.gl;if(!gl){throw new Error("No WebGL 2 context!");}this.viewportSize=vec2.fromValues(this.canvas.clientWidth,this.canvas.clientHeight);this.drawBufferSize=vec2.clone(this.viewportSize);this.discProgram=createProgram(gl,[discVertShaderSource,discFragShaderSource],null,{aModelPosition:0,aModelNormal:1,aModelUvs:2,aInstanceMatrix:3});this.discLocations={aModelPosition:gl.getAttribLocation(this.discProgram,"aModelPosition"),aModelUvs:gl.getAttribLocation(this.discProgram,"aModelUvs"),aInstanceMatrix:gl.getAttribLocation(this.discProgram,"aInstanceMatrix"),uWorldMatrix:gl.getUniformLocation(this.discProgram,"uWorldMatrix"),uViewMatrix:gl.getUniformLocation(this.discProgram,"uViewMatrix"),uProjectionMatrix:gl.getUniformLocation(this.discProgram,"uProjectionMatrix"),uCameraPosition:gl.getUniformLocation(this.discProgram,"uCameraPosition"),uScaleFactor:gl.getUniformLocation(this.discProgram,"uScaleFactor"),uRotationAxisVelocity:gl.getUniformLocation(this.discProgram,"uRotationAxisVelocity"),uTex:gl.getUniformLocation(this.discProgram,"uTex"),uFrames:gl.getUniformLocation(this.discProgram,"uFrames"),uItemCount:gl.getUniformLocation(this.discProgram,"uItemCount"),uAtlasSize:gl.getUniformLocation(this.discProgram,"uAtlasSize")};this.discGeo=new DiscGeometry(56,1);this.discBuffers=this.discGeo.data;this.discVAO=makeVertexArray(gl,[[makeBuffer(gl,this.discBuffers.vertices,gl.STATIC_DRAW),this.discLocations.aModelPosition,3],[makeBuffer(gl,this.discBuffers.uvs,gl.STATIC_DRAW),this.discLocations.aModelUvs,2]],this.discBuffers.indices);this.icoGeo=new IcosahedronGeometry();this.icoGeo.subdivide(1).spherize(this.SPHERE_RADIUS);this.instancePositions=this.icoGeo.vertices.map(v=>v.position);this.DISC_INSTANCE_COUNT=this.icoGeo.vertices.length;this.#initDiscInstances(this.DISC_INSTANCE_COUNT);this.worldMatrix=mat4.create();this.#initTexture();this.control=new ArcballControl(this.canvas,deltaTime=>this.#onControlUpdate(deltaTime));this.#updateCameraMatrix();this.#updateProjectionMatrix(gl);this.resize();if(onInit)onInit(this);}
 
@@ -137,7 +141,7 @@ class InfiniteGridMenu {
 
   #updateCameraMatrix(){mat4.targetTo(this.camera.matrix,this.camera.position,[0,0,0],this.camera.up);mat4.invert(this.camera.matrices.view,this.camera.matrix);}
 
-  #updateProjectionMatrix(gl){this.camera.aspect=gl.canvas.clientWidth/gl.canvas.clientHeight;const height=this.SPHERE_RADIUS*0.35;const distance=this.camera.position[2];if(this.camera.aspect>1){this.camera.fov=2*Math.atan(height/distance);}else{this.camera.fov=2*Math.atan(height/this.camera.aspect/distance);}mat4.perspective(this.camera.matrices.projection,this.camera.fov,this.camera.aspect,this.camera.near,this.camera.far);mat4.invert(this.camera.matrices.inversProjection,this.camera.matrices.projection);}
+  #updateProjectionMatrix(gl){this.camera.aspect=gl.canvas.clientWidth/gl.canvas.clientHeight;const height=this.SPHERE_RADIUS*0.35;const distance=this.camera.position[2];if(this.camera.aspect > 1){this.camera.fov=2*Math.atan(height/distance);}else{this.camera.fov=2*Math.atan(height/this.camera.aspect/distance);}mat4.perspective(this.camera.matrices.projection,this.camera.fov,this.camera.aspect,this.camera.near,this.camera.far);mat4.invert(this.camera.matrices.inversProjection,this.camera.matrices.projection);}
 
   #onControlUpdate(deltaTime){const timeScale=deltaTime/this.TARGET_FRAME_DURATION+0.0001;let damping=5/timeScale;let cameraTargetZ=3*this.scaleFactor;const isMoving=this.control.isPointerDown||Math.abs(this.smoothRotationVelocity)>0.01;if(isMoving!==this.movementActive){this.movementActive=isMoving;this.onMovementChange(isMoving);}if(!this.control.isPointerDown){const nearestVertexIndex=this.#findNearestVertexIndex();const itemIndex=nearestVertexIndex%Math.max(1,this.items.length);this.onActiveItemChange(itemIndex);const snapDirection=vec3.normalize(vec3.create(),this.#getVertexWorldPosition(nearestVertexIndex));this.control.snapTargetDirection=snapDirection;}else{cameraTargetZ+=this.control.rotationVelocity*80+2.5;damping=7/timeScale;}this.camera.position[2]+=(cameraTargetZ-this.camera.position[2])/damping;this.#updateCameraMatrix();}
 
@@ -154,17 +158,37 @@ export default function InfiniteMenu({ items = [], scale = 1.0 }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     let sketch;
+    let observer;
     const handleActiveItem = index => {
       const itemIndex = index % items.length;
       setActiveItem(items[itemIndex]);
     };
     if (canvas) {
-      sketch = new InfiniteGridMenu(canvas, items.length ? items : [{ image: "https://picsum.photos/900/900?grayscale", link: "#", title: "", description: "" }], handleActiveItem, setIsMoving, sk => sk.run(), scale);
+      sketch = new InfiniteGridMenu(canvas, items.length ? items : [{ image: "https://picsum.photos/900/900?grayscale", link: "#", title: "", description: "" }], handleActiveItem, setIsMoving, null, scale);
+      
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            sketch.start();
+          } else {
+            sketch.stop();
+          }
+        });
+      }, { threshold: 0.05 });
+      observer.observe(canvas);
     }
     const handleResize = () => { if (sketch) sketch.resize(); };
     window.addEventListener("resize", handleResize);
     handleResize();
-    return () => { window.removeEventListener("resize", handleResize); };
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (observer && canvas) {
+        observer.unobserve(canvas);
+      }
+      if (sketch) {
+        sketch.stop();
+      }
+    };
   }, [items, scale]);
 
   const handleButtonClick = () => {
