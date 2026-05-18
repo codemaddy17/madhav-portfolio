@@ -268,7 +268,7 @@ nav{
   opacity: 0.8;
 }
 .split-left .split-bg {
-  background: linear-gradient(135deg, #031b12 0%, #053b26 100%);
+  background: linear-gradient(135deg, rgba(3, 27, 18, 0.9) 0%, rgba(5, 59, 38, 0.8) 100%), url('/images/technical-bg.jpg') center/cover no-repeat;
 }
 .split-right .split-bg {
   background: linear-gradient(135deg, rgba(5, 59, 38, 0.8) 0%, rgba(3, 27, 18, 0.9) 100%), url('/images/creative-bg.jpg') center/cover no-repeat;
