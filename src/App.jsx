@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import InfiniteMenu from './InfiniteMenu'
 
 function App() {
-  const [dark, setDark] = useState(false)
+  const [dark, setDark] = useState(true)
   const [lbOpen, setLbOpen] = useState(false)
   const [lbData, setLbData] = useState({ cap: '', emoji: '', sub: '' })
   const [cIdx, setCIdx] = useState(0)
