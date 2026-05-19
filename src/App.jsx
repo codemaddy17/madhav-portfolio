@@ -248,7 +248,9 @@ function App() {
         <div className="reveal" style={{ position: 'relative', zIndex: 2 }}><h2 className="section-title">Things I've <em>Built</em></h2></div>
         <div className="projects-grid" style={{ position: 'relative', zIndex: 2 }}>
           <div className="proj-card reveal">
-            <div className="project-thumb pt2" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'3rem'}}>&#127758;</div>
+            <div className="project-thumb pt2" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" alt="Java" style={{height:'50px',width:'auto'}} />
+            </div>
             <div className="proj-body">
               <div className="proj-title">Inventory Management</div>
               <div className="proj-desc">Interactive data structures and algorithms visualizer — sorting, graph traversals, trees. Built to reinforce Java DSA concepts visually.</div>
@@ -257,7 +259,9 @@ function App() {
             </div>
           </div>
           <div className="proj-card reveal">
-            <div className="project-thumb pt3" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'3rem'}}>&#128197;</div>
+            <div className="project-thumb pt3" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" style={{height:'50px',width:'auto'}} />
+            </div>
             <div className="proj-body">
               <div className="proj-title">Finance Tracker</div>
               <div className="proj-desc">Internal web portal for UPES Debating Society — event documentation, media gallery, and announcement management system.</div>
@@ -266,7 +270,9 @@ function App() {
             </div>
           </div>
           <div className="proj-card reveal">
-            <div className="project-thumb pt4" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'3rem'}}>&#128247;</div>
+            <div className="project-thumb pt4" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" alt="Swift" style={{height:'50px',width:'auto'}} />
+            </div>
             <div className="proj-body">
               <div className="proj-title">E-Commerce Website</div>
               <div className="proj-desc">A responsive photography portfolio showcasing concert, street, and event photography. Masonry grid, lightbox, and category filtering.</div>
@@ -284,7 +290,7 @@ function App() {
           <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Leadership</div><div className="tl-date">2024 – Present</div><div className="tl-title">Head of Media — Prayudh Debating Society</div><div className="tl-org">UPES, Dehradun</div><div className="tl-desc">Led all media coverage, event documentation and design for one of UPES's most active student societies. Managed photography, videography and digital content pipelines for multiple events.</div></div>
           <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Photography</div><div className="tl-date">2024 – 2025</div><div className="tl-title">Event Photographer — Major Concerts &amp; Festivals</div><div className="tl-org">Pratibimb Photography Club · UPES</div><div className="tl-desc">Official coverage for Papon Concert 2025, Virasat 2024, UKTI Literature Fest 2025, and Doon Comedy Festival 2025. Member of Pratibimb Photography Club.</div><div><span className="tl-badge">&#127928; Papon Concert 2025</span> <span className="tl-badge">&#127775; Virasat 2024</span> <span className="tl-badge">&#128214; UKTI Lit Fest 2025</span></div></div>
           <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Certification · In Progress</div><div className="tl-date">2024 – Present</div><div className="tl-title">Full-Stack Web Development Specialization</div><div className="tl-org">Coursera · HKUST</div><div className="tl-desc">Comprehensive program covering React, Node.js, databases, REST APIs, and deployment — completing hands-on capstone projects throughout.</div></div>
-          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Academic</div><div className="tl-date">2024 – Present</div><div className="tl-title">B.Tech CSE · UPES Dehradun</div><div className="tl-org">CGPA: 6.95 after 1st Year</div><div className="tl-desc">Strong foundation in programming, data structures, algorithms, and computer science fundamentals. Active in campus extracurriculars.</div></div>
+          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Academic</div><div className="tl-date">2024 – Present</div><div className="tl-title">B.Tech CSE · UPES Dehradun</div><div className="tl-org">CGPA: 7 after 1st Year</div><div className="tl-desc">Strong foundation in programming, data structures, algorithms, and computer science fundamentals. Active in campus extracurriculars.</div></div>
         </div>
       </section>
 
@@ -297,7 +303,7 @@ function App() {
             <div className="social-links">
               <a href="#" className="soc-link"><span className="soc-icon">in</span> linkedin.com/in/madhavtiwari</a>
               <a href="#" className="soc-link"><span className="soc-icon">&#9671;</span> github.com/madhavtiwari</a>
-              <a href="#" className="soc-link"><span className="soc-icon">&#128247;</span> @madhav_frames</a>
+              <a href="#" className="soc-link"><span className="soc-icon">&#128247;</span> @maddywithalens</a>
               <a href="mailto:madhavtiwari.college@gmail.com" className="soc-link"><span className="soc-icon">&#9993;</span> madhavtiwari.college@gmail.com</a>
               <a href="tel:+917856806464" className="soc-link"><span className="soc-icon">&#128222;</span> +91-7856806464</a>
             </div>
