@@ -213,7 +213,7 @@ function App() {
       <section id="skills" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="giant-bg-text">INNOVATE</div>
         <div className="toolkit-orbit-wrap reveal">
-          <img src="/images/toolkit-base.png" alt="Madhav Base" className="toolkit-base-img" />
+          <img src="/images/toolkit-base-new.png" alt="Madhav Base" className="toolkit-base-img" />
           <div className="toolkit-orbit">
             {[
               'html5/html5-original.svg',
