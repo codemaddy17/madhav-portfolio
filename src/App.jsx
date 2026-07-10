@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import InfiniteMenu from './InfiniteMenu'
+
+gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   const [dark, setDark] = useState(true)
@@ -11,6 +15,7 @@ function App() {
   const curRef = useRef(null)
   const ringRef = useRef(null)
   const scrollBarRef = useRef(null)
+  const aboutRef = useRef(null)
   const cTrackRef = useRef(null)
   const slides = 4
 
@@ -86,6 +91,93 @@ function App() {
     return () => els.forEach(el => { el.removeEventListener('mouseenter', enter); el.removeEventListener('mouseleave', leave) })
   })
 
+  // ── GSAP ScrollTrigger animations for About section ──
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const section = aboutRef.current
+      if (!section) return
+
+      // ── Title letter-by-letter reveal ──
+      const titleChars = section.querySelectorAll('.about-title-char')
+      gsap.set(titleChars, { opacity: 0, y: 80, rotateX: -90 })
+      gsap.to(titleChars, {
+        opacity: 1, y: 0, rotateX: 0,
+        duration: 0.8, stagger: 0.04, ease: 'back.out(1.7)',
+        scrollTrigger: { trigger: section, start: 'top 80%', toggleActions: 'play none none reverse' }
+      })
+
+      // ── Decorative line draw ──
+      const decoLine = section.querySelector('.about-deco-line')
+      if (decoLine) {
+        gsap.set(decoLine, { scaleX: 0, transformOrigin: 'left center' })
+        gsap.to(decoLine, {
+          scaleX: 1, duration: 1.2, ease: 'power3.inOut',
+          scrollTrigger: { trigger: section, start: 'top 75%', toggleActions: 'play none none reverse' }
+        })
+      }
+
+      // ── Paragraph lines slide up ──
+      const paragraphs = section.querySelectorAll('.about-lead')
+      gsap.set(paragraphs, { opacity: 0, y: 50 })
+      gsap.to(paragraphs, {
+        opacity: 1, y: 0,
+        duration: 0.9, stagger: 0.2, ease: 'power3.out',
+        scrollTrigger: { trigger: paragraphs[0], start: 'top 85%', toggleActions: 'play none none reverse' }
+      })
+
+      // ── Chips pop-in with elastic bounce ──
+      const chips = section.querySelectorAll('.chip')
+      gsap.set(chips, { opacity: 0, scale: 0, rotation: -15 })
+      gsap.to(chips, {
+        opacity: 1, scale: 1, rotation: 0,
+        duration: 0.6, stagger: 0.08, ease: 'elastic.out(1, 0.5)',
+        scrollTrigger: { trigger: section.querySelector('.about-chips'), start: 'top 85%', toggleActions: 'play none none reverse' }
+      })
+
+      // ── Contact items sequential fade ──
+      const cqItems = section.querySelectorAll('.cq-item')
+      gsap.set(cqItems, { opacity: 0, x: -30 })
+      gsap.to(cqItems, {
+        opacity: 1, x: 0,
+        duration: 0.6, stagger: 0.15, ease: 'power2.out',
+        scrollTrigger: { trigger: section.querySelector('.contact-quick'), start: 'top 90%', toggleActions: 'play none none reverse' }
+      })
+
+      // ── Cards stagger slide-in from right with 3D rotation ──
+      const cards = section.querySelectorAll('.about-card')
+      gsap.set(cards, { opacity: 0, x: 120, rotateY: -15 })
+      cards.forEach((card, i) => {
+        gsap.to(card, {
+          opacity: 1, x: 0, rotateY: 0,
+          duration: 0.8, delay: i * 0.15, ease: 'power3.out',
+          scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none reverse' }
+        })
+      })
+
+      // ── Floating particles ambient effect ──
+      const particles = section.querySelectorAll('.about-particle')
+      particles.forEach((p, i) => {
+        gsap.to(p, {
+          y: `random(-60, 60)`, x: `random(-40, 40)`, opacity: gsap.utils.random(0.2, 0.6),
+          duration: gsap.utils.random(3, 6), repeat: -1, yoyo: true,
+          ease: 'sine.inOut', delay: i * 0.5
+        })
+      })
+
+      // ── Section-level parallax on the giant background text ──
+      const bgText = section.querySelector('.about-bg-text')
+      if (bgText) {
+        gsap.to(bgText, {
+          x: -150, ease: 'none',
+          scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 1 }
+        })
+      }
+
+    }, aboutRef)
+
+    return () => ctx.revert()
+  }, [])
+
 
   return (
     <div className={dark ? 'dark' : ''}>
@@ -109,33 +201,103 @@ function App() {
       </nav>
 
       <section id="hero">
-        <div className="blob blob1"></div>
-        <div className="blob blob2"></div>
-        <div className="blob blob3"></div>
-        <div className="hero-grid"></div>
-        <div className="hero-photo-panel">
-          <img src="/images/hero-photo.jpg" alt="Madhav Tiwari" />
+        <div className="hero-inner">
+          <div className="hero-meta">
+            <span className="hero-line"></span>
+            PORTFOLIO • 2025
+          </div>
+          <h1 className="hero-name">
+            Madhav <span className="script-text">तिवारी</span>
+          </h1>
+          <div className="hero-bottom-row">
+            <p className="hero-desc">
+              Two crafts, one voice — engineering the invisible, capturing the moment.
+            </p>
+            <div className="hero-bottom-right">
+              <div className="hero-location">
+                <span className="loc-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <span>Dehradun, India</span>
+              </div>
+              <div className="hero-scroll-btn">
+                <span>SCROLL</span>
+                <span className="scroll-arrow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-down"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="hero-photo-fade"></div>
-        <div className="hero-content">
-          <div className="hero-eyebrow"><span className="eyebrow-dot"></span> Open to Internships &amp; Opportunities</div>
-          <h1 className="hero-name">Madhav <em className="accent hindi-name">तिवारी</em></h1>
-          <div className="hero-typed-wrap">
-            <span className="typed-prefix">I'm a</span>
-            <span className="hero-typed" ref={typedRef}></span><span className="cursor-blink">|</span>
+      </section>
+
+      <section id="about" ref={aboutRef}>
+        {/* Floating ambient particles */}
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="about-particle" style={{
+            top: `${10 + Math.random() * 80}%`,
+            left: `${5 + Math.random() * 90}%`,
+            width: `${4 + Math.random() * 8}px`,
+            height: `${4 + Math.random() * 8}px`,
+          }} />
+        ))}
+        {/* Giant parallax background text */}
+        <div className="about-bg-text">ABOUT</div>
+        {/* Title with split characters */}
+        <div className="about-title-wrap">
+          <h2 className="section-title">
+            {'Who I '.split('').map((ch, i) => (
+              <span key={i} className="about-title-char">{ch === ' ' ? '\u00A0' : ch}</span>
+            ))}
+            <em>
+              {'Am'.split('').map((ch, i) => (
+                <span key={`em-${i}`} className="about-title-char">{ch}</span>
+              ))}
+            </em>
+          </h2>
+          <div className="about-deco-line"></div>
+        </div>
+        <div className="about-grid">
+          <div>
+            <p className="about-lead">I'm <strong>Madhav Tiwari</strong>, a 2nd-year B.Tech CSE student from Delhi, currently studying at <strong>UPES, Dehradun</strong>. I sit at the intersection of <strong>Full Stack</strong> development, and creative <strong>Photography</strong>.</p>
+            <p className="about-lead" style={{marginBottom:'1.8rem'}}>I love breaking problems down — whether it's algorithmic challenges in <strong>Java</strong>, building scalable web apps with <strong>React &amp; Node.js</strong>, or understanding how systems can be secured from the ground up.</p>
+            <div className="about-chips">
+              <span className="chip">&#128187; Full Stack Dev</span>
+              <span className="chip">&#128274; IOS Development</span>
+              <span className="chip">&#128172; DSA · Java</span>
+              <span className="chip">&#127757; Open Source</span>
+              <span className="chip">&#128247; Photography</span>
+              <span className="chip">&#127908; Media Coverage</span>
+            </div>
+            <div className="contact-quick">
+              <div className="cq-item"><span className="cq-icon">&#128205;</span> Pune, Maharashtra</div>
+              <div className="cq-item"><span className="cq-icon">&#128222;</span> +91-7856806464</div>
+              <div className="cq-item"><span className="cq-icon">&#9993;</span> <a href="mailto:madhavtiwari.college@gmail.com">madhavtiwari.college@gmail.com</a></div>
+            </div>
           </div>
-          <p className="hero-sub">B.Tech CSE student at <strong>UPES, Dehradun</strong> — aspiring <strong>IOS Development</strong> &amp; <strong>Full Stack Developer</strong>. I build secure, scalable web applications and capture stories through a camera lens.</p>
-          <div className="hero-btns">
-            <a href="#projects" className="btn btn-primary">&#9654; View Projects</a>
-            <a href="#" className="btn btn-outline">&#8659; Resume </a>
-            <a href="#contact" className="btn btn-outline">&#9993; Contact Me</a>
-          </div>
-          <div className="hero-stats">
-            <div className="stat"><div className="stat-num">5+</div><div className="stat-label">Certifications</div></div>
-            <div className="stat"><div className="stat-num">20+</div><div className="stat-label">Events Covered</div></div>
+          <div className="about-cards">
+            <div className="about-card">
+              <div className="ac-header"><div className="ac-icon">&#127979;</div><div className="ac-title">Education</div></div>
+              <div className="ac-sub">UPES, Dehradun · 2024–Present</div>
+              <div className="ac-body">B.Tech Computer Science Engineering</div>
+            </div>
+            <div className="about-card">
+              <div className="ac-header"><div className="ac-icon">&#127891;</div><div className="ac-title">Academic Background</div></div>
+              <div className="ac-sub">CBSE · Pune</div>
+              <div className="ac-body">Class 12th: 75% &nbsp;|&nbsp; Class 10th: 89%</div>
+            </div>
+            <div className="about-card">
+              <div className="ac-header"><div className="ac-icon">&#128251;</div><div className="ac-title">Career Goal</div></div>
+              <div className="ac-sub">Aspiring IOS Development + Full Stack Developer</div>
+              <div className="ac-body">Building secure, scalable web applications with a deep understanding of how systems work — and how they can be protected.</div>
+            </div>
+            <div className="about-card">
+              <div className="ac-header"><div className="ac-icon">&#127919;</div><div className="ac-title">Interests</div></div>
+              <div className="ac-sub">What drives me</div>
+              <div className="ac-body">DSA · Web Development · Event Photography</div>
+            </div>
           </div>
         </div>
-        <div className="hero-scroll"><div className="scroll-track"></div>scroll</div>
       </section>
 
       <div id="split-chooser" className="reveal">
@@ -163,55 +325,15 @@ function App() {
         </a>
       </div>
 
-      <section id="about">
-        <div className="reveal">
-          <h2 className="section-title">Who I <em>Am</em></h2>
-        </div>
-        <div className="about-grid">
-          <div className="reveal">
-            <p className="about-lead">I'm <strong>Madhav Tiwari</strong>, a 2nd-year B.Tech CSE student from Delhi, currently studying at <strong>UPES, Dehradun</strong>. I sit at the intersection of <strong>Full Stack</strong> development, and creative <strong>Photography</strong>.</p>
-            <p className="about-lead" style={{marginBottom:'1.8rem'}}>I love breaking problems down — whether it's algorithmic challenges in <strong>Java</strong>, building scalable web apps with <strong>React &amp; Node.js</strong>, or understanding how systems can be secured from the ground up.</p>
-            <div className="about-chips">
-              <span className="chip">&#128187; Full Stack Dev</span>
-              <span className="chip">&#128274; IOS Development</span>
-              <span className="chip">&#128172; DSA · Java</span>
-              <span className="chip">&#127757; Open Source</span>
-              <span className="chip">&#128247; Photography</span>
-              <span className="chip">&#127908; Media Coverage</span>
-            </div>
-            <div className="contact-quick">
-              <div className="cq-item"><span className="cq-icon">&#128205;</span> Pune, Maharashtra</div>
-              <div className="cq-item"><span className="cq-icon">&#128222;</span> +91-7856806464</div>
-              <div className="cq-item"><span className="cq-icon">&#9993;</span> <a href="mailto:madhavtiwari.college@gmail.com">madhavtiwari.college@gmail.com</a></div>
-            </div>
-          </div>
-          <div className="about-cards reveal">
-            <div className="about-card">
-              <div className="ac-header"><div className="ac-icon">&#127979;</div><div className="ac-title">Education</div></div>
-              <div className="ac-sub">UPES, Dehradun · 2024–Present</div>
-              <div className="ac-body">B.Tech Computer Science Engineering</div>
-            </div>
-            <div className="about-card">
-              <div className="ac-header"><div className="ac-icon">&#127891;</div><div className="ac-title">Academic Background</div></div>
-              <div className="ac-sub">CBSE · Pune</div>
-              <div className="ac-body">Class 12th: 75% &nbsp;|&nbsp; Class 10th: 89%</div>
-            </div>
-            <div className="about-card">
-              <div className="ac-header"><div className="ac-icon">&#128251;</div><div className="ac-title">Career Goal</div></div>
-              <div className="ac-sub">Aspiring IOS Development + Full Stack Developer</div>
-              <div className="ac-body">Building secure, scalable web applications with a deep understanding of how systems work — and how they can be protected.</div>
-            </div>
-            <div className="about-card">
-              <div className="ac-header"><div className="ac-icon">&#127919;</div><div className="ac-title">Interests</div></div>
-              <div className="ac-sub">What drives me</div>
-              <div className="ac-body">DSA · Web Development · Event Photography</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section id="skills" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div className="giant-bg-text">INNOVATE</div>
+        <div className="skills-marquee-container">
+          <div className="skills-marquee-inner">
+            <span className="skills-marquee-text">create build deploy &nbsp;·&nbsp; </span>
+            <span className="skills-marquee-text">create build deploy &nbsp;·&nbsp; </span>
+            <span className="skills-marquee-text">create build deploy &nbsp;·&nbsp; </span>
+            <span className="skills-marquee-text">create build deploy &nbsp;·&nbsp; </span>
+          </div>
+        </div>
         <div className="toolkit-orbit-wrap reveal">
           <img src="/images/toolkit-base-new.png" alt="Madhav Base" className="toolkit-base-img" />
           <div className="toolkit-orbit">
