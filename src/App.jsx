@@ -2,24 +2,24 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import InfiniteMenu from './InfiniteMenu'
+import TextPressure from './TextPressure'
 
 gsap.registerPlugin(ScrollTrigger)
 
 function App() {
-  const [dark, setDark] = useState(true)
+
   const [lbOpen, setLbOpen] = useState(false)
   const [lbData, setLbData] = useState({ cap: '', emoji: '', sub: '' })
   const [cIdx, setCIdx] = useState(0)
   const [activeCat, setActiveCat] = useState('all')
   const typedRef = useRef(null)
   const curRef = useRef(null)
-  const ringRef = useRef(null)
   const scrollBarRef = useRef(null)
   const aboutRef = useRef(null)
   const cTrackRef = useRef(null)
   const slides = 4
 
-  const toggleTheme = () => setDark(d => !d)
+
 
   const openLB = (cap, emoji, sub) => { setLbData({ cap, emoji, sub }); setLbOpen(true) }
   const closeLB = () => setLbOpen(false)
@@ -56,12 +56,14 @@ function App() {
   }, [])
 
   useEffect(() => {
-    let mx = 0, my = 0, rx = 0, ry = 0, raf
-    const onMove = (e) => { mx = e.clientX; my = e.clientY; if (curRef.current) { curRef.current.style.left = mx + 'px'; curRef.current.style.top = my + 'px' } }
-    function animate() { rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1; if (ringRef.current) { ringRef.current.style.left = rx + 'px'; ringRef.current.style.top = ry + 'px' } raf = requestAnimationFrame(animate) }
+    const onMove = (e) => {
+      if (curRef.current) {
+        curRef.current.style.left = e.clientX + 'px';
+        curRef.current.style.top = e.clientY + 'px';
+      }
+    }
     document.addEventListener('mousemove', onMove)
-    animate()
-    return () => { document.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf) }
+    return () => { document.removeEventListener('mousemove', onMove) }
   }, [])
 
   useEffect(() => {
@@ -69,7 +71,7 @@ function App() {
       const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100
       if (scrollBarRef.current) scrollBarRef.current.style.width = pct + '%'
 
-      document.querySelectorAll('.reveal,.tl-item').forEach(el => {
+      document.querySelectorAll('.reveal').forEach(el => {
         if (el.getBoundingClientRect().top < window.innerHeight * 0.9) el.classList.add('vis')
       })
     }
@@ -84,9 +86,13 @@ function App() {
   }, [cMove])
 
   useEffect(() => {
-    const els = document.querySelectorAll('a,button,.proj-card,.about-card,.m-item,.split-side')
-    const enter = () => { if(curRef.current){curRef.current.style.width='4px';curRef.current.style.height='4px'} if(ringRef.current){ringRef.current.style.width='46px';ringRef.current.style.height='46px'} }
-    const leave = () => { if(curRef.current){curRef.current.style.width='8px';curRef.current.style.height='8px'} if(ringRef.current){ringRef.current.style.width='34px';ringRef.current.style.height='34px'} }
+    const els = document.querySelectorAll('a,button,.splayed-card,.about-card,.m-item,.split-side,.interest-text')
+    const enter = () => {
+      if (curRef.current) curRef.current.classList.add('hovered')
+    }
+    const leave = () => {
+      if (curRef.current) curRef.current.classList.remove('hovered')
+    }
     els.forEach(el => { el.addEventListener('mouseenter', enter); el.addEventListener('mouseleave', leave) })
     return () => els.forEach(el => { el.removeEventListener('mouseenter', enter); el.removeEventListener('mouseleave', leave) })
   })
@@ -96,6 +102,38 @@ function App() {
     const ctx = gsap.context(() => {
       const section = aboutRef.current
       if (!section) return
+
+      // ── Hero to About transition (smooth curtain reveal and zoom) ──
+      const heroTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+          pin: true,
+          pinSpacing: false,
+          invalidateOnRefresh: true,
+        }
+      })
+
+      heroTimeline
+        .to('.hero-inner', {
+          yPercent: -35,
+          opacity: 0,
+          scale: 0.94,
+          ease: 'none'
+        }, 0)
+        .to('.hero-bg-image', {
+          scale: 1.15,
+          yPercent: 12,
+          opacity: 0.25,
+          ease: 'none'
+        }, 0)
+        .to('.hero-bg-overlay', {
+          backgroundColor: '#0a0f0d',
+          opacity: 0.95,
+          ease: 'none'
+        }, 0)
 
       // ── Title letter-by-letter reveal ──
       const titleChars = section.querySelectorAll('.about-title-char')
@@ -178,29 +216,102 @@ function App() {
     return () => ctx.revert()
   }, [])
 
+  // ── GSAP ScrollTrigger animations for Projects, Experience & Contact ──
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // ── Projects Section Splayed Deck ScrollTrigger ──
+      const deck = document.querySelector('#projects .splayed-deck')
+      if (deck) {
+        ScrollTrigger.create({
+          trigger: deck,
+          start: 'top 75%',
+          end: 'bottom 15%',
+          toggleClass: 'is-visible',
+        })
+      }
+
+      // ── Experience Section Timeline Stagger ──
+      const tlItems = document.querySelectorAll('.timeline .tl-item')
+      if (tlItems.length) {
+        tlItems.forEach(item => {
+          const dot = item.querySelector('.tl-dot')
+          const contentNodes = Array.from(item.children).filter(child => !child.classList.contains('tl-dot'))
+          
+          gsap.set(dot, { scale: 0 })
+          gsap.set(contentNodes, { opacity: 0, x: -30 })
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: item,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse'
+            }
+          })
+
+          tl.to(dot, { scale: 1, duration: 0.4, ease: 'back.out(2)' })
+            .to(contentNodes, { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }, '-=0.2')
+        })
+      }
+
+      // ── Contact Section Stagger ──
+      const contactLeft = document.querySelector('.contact-left')
+      const contactForm = document.querySelector('.form')
+      if (contactLeft && contactForm) {
+        const leftItems = contactLeft.children
+        const formItems = contactForm.children
+
+        gsap.set(leftItems, { opacity: 0, x: -30 })
+        gsap.set(formItems, { opacity: 0, y: 30 })
+
+        gsap.to(leftItems, {
+          opacity: 1, x: 0,
+          duration: 0.6, stagger: 0.1, ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#contact',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        })
+
+        gsap.to(formItems, {
+          opacity: 1, y: 0,
+          duration: 0.6, stagger: 0.1, ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#contact',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        })
+      }
+    })
+    return () => ctx.revert()
+  }, [])
+
 
   return (
-    <div className={dark ? 'dark' : ''}>
-      <div id="cur" ref={curRef}></div>
-      <div id="cur-ring" ref={ringRef}></div>
+    <div className="dark">
+      <div id="cur" ref={curRef}>⚽</div>
       <div id="scroll-bar" ref={scrollBarRef}></div>
 
       <nav id="nav">
         <div className="nav-logo">Madhav<span className="dot">.</span></div>
         <ul className="nav-links">
           <li><a href="#about">About</a></li>
+          <li><a href="#experience">Experience</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#projects">Projects</a></li>
-          <li><a href="#experience">Experience</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#maddy">Maddy</a></li>
           <li><a href="#photography">Photography</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
         <div className="nav-right">
-          <button className="theme-btn" onClick={toggleTheme}>{dark ? '☀️ Light' : '🌙 Dark'}</button>
+
         </div>
       </nav>
 
       <section id="hero">
+        <div className="hero-bg-image"></div>
+        <div className="hero-bg-overlay"></div>
         <div className="hero-inner">
           <div className="hero-meta">
             <span className="hero-line"></span>
@@ -220,7 +331,7 @@ function App() {
                 </span>
                 <span>Dehradun, India</span>
               </div>
-              <div className="hero-scroll-btn">
+              <div className="hero-scroll-btn" onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} style={{ cursor: 'pointer' }}>
                 <span>SCROLL</span>
                 <span className="scroll-arrow">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-down"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
@@ -259,7 +370,7 @@ function App() {
         </div>
         <div className="about-grid">
           <div>
-            <p className="about-lead">I'm <strong>Madhav Tiwari</strong>, a 2nd-year B.Tech CSE student from Delhi, currently studying at <strong>UPES, Dehradun</strong>. I sit at the intersection of <strong>Full Stack</strong> development, and creative <strong>Photography</strong>.</p>
+            <p className="about-lead">I'm <strong>Madhav Tiwari</strong>, a Pre-Final Year B.Tech CSE student from Delhi, currently studying at <strong>UPES, Dehradun</strong>. I sit at the intersection of <strong>Full Stack</strong> development, and creative <strong>Photography</strong>.</p>
             <p className="about-lead" style={{marginBottom:'1.8rem'}}>I love breaking problems down — whether it's algorithmic challenges in <strong>Java</strong>, building scalable web apps with <strong>React &amp; Node.js</strong>, or understanding how systems can be secured from the ground up.</p>
             <div className="about-chips">
               <span className="chip">&#128187; Full Stack Dev</span>
@@ -282,11 +393,6 @@ function App() {
               <div className="ac-body">B.Tech Computer Science Engineering</div>
             </div>
             <div className="about-card">
-              <div className="ac-header"><div className="ac-icon">&#127891;</div><div className="ac-title">Academic Background</div></div>
-              <div className="ac-sub">CBSE · Pune</div>
-              <div className="ac-body">Class 12th: 75% &nbsp;|&nbsp; Class 10th: 89%</div>
-            </div>
-            <div className="about-card">
               <div className="ac-header"><div className="ac-icon">&#128251;</div><div className="ac-title">Career Goal</div></div>
               <div className="ac-sub">Aspiring IOS Development + Full Stack Developer</div>
               <div className="ac-body">Building secure, scalable web applications with a deep understanding of how systems work — and how they can be protected.</div>
@@ -294,9 +400,20 @@ function App() {
             <div className="about-card">
               <div className="ac-header"><div className="ac-icon">&#127919;</div><div className="ac-title">Interests</div></div>
               <div className="ac-sub">What drives me</div>
-              <div className="ac-body">DSA · Web Development · Event Photography</div>
+              <div className="ac-body">Music  · Football · Photography</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="experience">
+        <div className="reveal"><h2 className="section-title">The <em>Journey</em></h2></div>
+        <div className="timeline">
+          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Internship</div><div className="tl-date">June 2024 – July 2024</div><div className="tl-title">Intern — Child Help Foundation</div><div className="tl-org">Non-Profit · Remote</div><div className="tl-desc">Contributed to technology and outreach initiatives for a social-impact organisation, gaining real-world professional experience in a collaborative environment.</div></div>
+          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Leadership</div><div className="tl-date">2024 – Present</div><div className="tl-title">Head of Media — Prayudh Debating Society</div><div className="tl-org">UPES, Dehradun</div><div className="tl-desc">Led all media coverage, event documentation and design for one of UPES's most active student societies. Managed photography, videography and digital content pipelines for multiple events.</div></div>
+          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Photography</div><div className="tl-date">2024 – 2025</div><div className="tl-title">Event Photographer — Major Concerts &amp; Festivals</div><div className="tl-org">Pratibimb Photography Club · UPES</div><div className="tl-desc">Official coverage for Papon Concert 2025, Virasat 2024, UKTI Literature Fest 2025, and Doon Comedy Festival 2025. Member of Pratibimb Photography Club.</div><div><span className="tl-badge">&#127928; Papon Concert 2025</span> <span className="tl-badge">&#127775; Virasat 2024</span> <span className="tl-badge">&#128214; UKTI Lit Fest 2025</span></div></div>
+          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Certification · In Progress</div><div className="tl-date">2024 – Present</div><div className="tl-title">Full-Stack Web Development Specialization</div><div className="tl-org">Coursera · HKUST</div><div className="tl-desc">Comprehensive program covering React, Node.js, databases, REST APIs, and deployment — completing hands-on capstone projects throughout.</div></div>
+          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Academic</div><div className="tl-date">2024 – Present</div><div className="tl-title">B.Tech CSE · UPES Dehradun</div><div className="tl-org">CGPA: 7 after 1st Year</div><div className="tl-desc">Strong foundation in programming, data structures, algorithms, and computer science fundamentals. Active in campus extracurriculars.</div></div>
         </div>
       </section>
 
@@ -365,11 +482,10 @@ function App() {
       </section>
 
       <section id="projects" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div className="glass-blob blob-1"></div>
-        <div className="glass-blob blob-2"></div>
         <div className="reveal" style={{ position: 'relative', zIndex: 2 }}><h2 className="section-title">Things I've <em>Built</em></h2></div>
-        <div className="projects-grid" style={{ position: 'relative', zIndex: 2 }}>
-          <div className="proj-card reveal">
+        <div className="splayed-deck" style={{ position: 'relative', zIndex: 2 }}>
+          <div className="splayed-card">
+            <div className="card-wave"></div>
             <div className="project-thumb pt2" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center'}}>
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" alt="Java" style={{height:'50px',width:'auto'}} />
             </div>
@@ -380,7 +496,8 @@ function App() {
               <div className="proj-links"><a href="#" className="plb plb-solid">&#9654; Live Demo</a><a href="#" className="plb plb-ghost">&#10140; GitHub</a></div>
             </div>
           </div>
-          <div className="proj-card reveal">
+          <div className="splayed-card">
+            <div className="card-wave"></div>
             <div className="project-thumb pt3" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center'}}>
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" style={{height:'50px',width:'auto'}} />
             </div>
@@ -391,7 +508,8 @@ function App() {
               <div className="proj-links"><a href="#" className="plb plb-solid">&#9654; Live Demo</a><a href="#" className="plb plb-ghost">&#10140; GitHub</a></div>
             </div>
           </div>
-          <div className="proj-card reveal">
+          <div className="splayed-card">
+            <div className="card-wave"></div>
             <div className="project-thumb pt4" style={{height:140,display:'flex',alignItems:'center',justifyContent:'center'}}>
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg" alt="Swift" style={{height:'50px',width:'auto'}} />
             </div>
@@ -405,21 +523,27 @@ function App() {
         </div>
       </section>
 
-      <section id="experience">
-        <div className="reveal"><div className="section-tag">Experience &amp; Achievements</div><h2 className="section-title">The <em>Journey</em></h2></div>
-        <div className="timeline">
-          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Internship</div><div className="tl-date">June 2024 – July 2024</div><div className="tl-title">Intern — Child Help Foundation</div><div className="tl-org">Non-Profit · Remote</div><div className="tl-desc">Contributed to technology and outreach initiatives for a social-impact organisation, gaining real-world professional experience in a collaborative environment.</div></div>
-          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Leadership</div><div className="tl-date">2024 – Present</div><div className="tl-title">Head of Media — Prayudh Debating Society</div><div className="tl-org">UPES, Dehradun</div><div className="tl-desc">Led all media coverage, event documentation and design for one of UPES's most active student societies. Managed photography, videography and digital content pipelines for multiple events.</div></div>
-          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Photography</div><div className="tl-date">2024 – 2025</div><div className="tl-title">Event Photographer — Major Concerts &amp; Festivals</div><div className="tl-org">Pratibimb Photography Club · UPES</div><div className="tl-desc">Official coverage for Papon Concert 2025, Virasat 2024, UKTI Literature Fest 2025, and Doon Comedy Festival 2025. Member of Pratibimb Photography Club.</div><div><span className="tl-badge">&#127928; Papon Concert 2025</span> <span className="tl-badge">&#127775; Virasat 2024</span> <span className="tl-badge">&#128214; UKTI Lit Fest 2025</span></div></div>
-          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Certification · In Progress</div><div className="tl-date">2024 – Present</div><div className="tl-title">Full-Stack Web Development Specialization</div><div className="tl-org">Coursera · HKUST</div><div className="tl-desc">Comprehensive program covering React, Node.js, databases, REST APIs, and deployment — completing hands-on capstone projects throughout.</div></div>
-          <div className="tl-item"><div className="tl-dot"></div><div className="tl-tag">Academic</div><div className="tl-date">2024 – Present</div><div className="tl-title">B.Tech CSE · UPES Dehradun</div><div className="tl-org">CGPA: 7 after 1st Year</div><div className="tl-desc">Strong foundation in programming, data structures, algorithms, and computer science fundamentals. Active in campus extracurriculars.</div></div>
+      <section id="maddy">
+        <div className="reveal" style={{ position: 'relative', width: '100%', height: '350px' }}>
+          <TextPressure
+            text="MADDY"
+            flex={true}
+            alpha={false}
+            stroke={false}
+            width={true}
+            weight={true}
+            italic={true}
+            textColor="var(--text)"
+            strokeColor="var(--text2)"
+            minFontSize={36}
+          />
         </div>
       </section>
 
       <section id="contact">
-        <div className="reveal"><div className="section-tag">Get In Touch</div><h2 className="section-title">Let's <em>Connect</em></h2></div>
+        <div className="reveal"><h2 className="section-title">Let's <em>Connect</em></h2></div>
         <div className="contact-grid">
-          <div className="contact-left reveal">
+          <div className="contact-left">
             <h3>Open to Collaborations &amp; Internships</h3>
             <p>Whether you want to collaborate on a project, discuss IOS development, or just want to say hello — my inbox is open. I'm especially keen on opportunities in full-stack development and security.</p>
             <div className="social-links">
@@ -430,7 +554,7 @@ function App() {
               <a href="tel:+917856806464" className="soc-link"><span className="soc-icon">&#128222;</span> +91-7856806464</a>
             </div>
           </div>
-          <div className="form reveal">
+          <div className="form">
             <div className="fg"><label>Your Name</label><input type="text" className="finput" placeholder="XYZ" /></div>
             <div className="fg"><label>Email Address</label><input type="email" className="finput" placeholder="XYZ@example.com" /></div>
             <div className="fg"><label>Message</label><textarea className="ftextarea" placeholder="Hey Madhav, I'd love to collaborate on..."></textarea></div>
@@ -441,7 +565,6 @@ function App() {
 
       <section id="photography" style={{background:'var(--g900)',paddingTop:'4rem',paddingBottom:'4rem'}}>
         <div className="reveal" style={{textAlign:'center',marginBottom:'2rem'}}>
-          <div className="section-tag" style={{color:'var(--g400)'}}>&#128247; Photography</div>
           <h2 className="section-title" style={{color:'var(--off)'}}>Visual Storytelling<br/><em>Through the Lens</em></h2>
           <p style={{color:'rgba(238,238,238,0.6)',maxWidth:600,margin:'1rem auto 0',lineHeight:1.8,fontSize:'.95rem'}}>Drag and spin the interactive WebGL globe to explore my visual journeys across concerts, cultural festivals, literary events, comedy shows, and street photography.</p>
         </div>
@@ -467,8 +590,8 @@ function App() {
       </div>
 
       <footer>
-        <div>&#169; 2025 <a href="#">Madhav Tiwari</a> · Crafted with passion in Dehradun</div>
-        <div>B.Tech CSE · UPES · IOS Development &amp; Full Stack</div>
+        <div>&#169; 2025 <a href="#">Madhav Tiwari</a> · Crafted with passion in my room</div>
+        <div>IOS Development &amp; Full Stack</div>
       </footer>
     </div>
   )
